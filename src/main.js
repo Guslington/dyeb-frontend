@@ -1,18 +1,22 @@
 import Vue from 'vue'
-import App from '@/components/App'
+import VueEvents from 'vue-events'
+import UUID from 'vue-uuid';
+
+import App from './App';
+import router from './router';
+import store from './store';
+import './auth';
 
 import 'firebaseui/dist/firebaseui.css';
 
-import router from './router';
-import store from './store';
-
-Vue.config.productionTip = false;
+Vue.use(VueEvents);
+Vue.use(UUID);
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
-  store,
+  store: store,
   template: '<App/>',
-  components: { App },
+  components: { App }
 });

@@ -1,16 +1,17 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Moment from 'vue-moment'
-import Home from '@/components/Home'
-import Login from '@/components/Login'
-import Competitions from '@/components/Competitions'
-import Competition from '@/components/Competition'
-import Beers from '@/components/Beers'
-import Register from '@/components/Register'
 
-import firebase from '@/firebase';
+import Home from '@/pages/Home';
+import Competitions from '@/pages/Competitions';
+import Competition from '@/pages/Competition';
+import Register from '@/pages/Register';
+import Scorecard from '@/pages/Scorecard';
+import Profile from '@/pages/Profile';
 
-Vue.use(Router)
+import store from '@/store';
+
+Vue.use(Router);
 Vue.use(Moment);
 
 let router = new Router({
@@ -34,33 +35,38 @@ let router = new Router({
       meta: { requiresAuth: true }
     },
     {
-      path: '/beers',
-      name: 'Beers',
-      component: Beers,
+      path: '/register/:id',
+      name: 'Register',
+      component: Register,
       meta: { requiresAuth: true }
     },
     {
-      path: '/register',
-      name: 'Register',
-      component: Register
+      path: '/scorecard/:id',
+      name: 'Scorecard',
+      component: Scorecard,
+      meta: { requiresAuth: true }
     },
     {
-      path: '/login',
-      name: 'Login',
-      component: Login
+      path: '/profile',
+      name: 'Profile',
+      component: Profile,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '*',
+      redirect: '/'
     }
   ]
 })
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
-      firebase.auth().onAuthStateChanged(function(user) {
-        if (!user) {
-          next({ path: '/login' })
-        } else {
-          next()
-        }
-      });
+      if (store.state.user.loggedIn) {
+        next()
+        return
+      } else {
+        store.dispatch('user/login')
+      }
     } else {
         next()
     }

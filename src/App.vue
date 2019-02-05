@@ -15,7 +15,7 @@
             </li>
 
             <li class="nav-item">
-              <router-link class="nav-link" to="/beers">My Beers</router-link>
+              <router-link class="nav-link" to="/profile">Profile</router-link>
             </li>
 
           </ul>
@@ -23,7 +23,7 @@
           <button
             id="qsLoginBtn"
             class="btn btn-primary btn-margin"
-            v-if="$store.state.user"
+            v-if="loggedIn"
             @click="logout">
               Log Out
           </button>
@@ -54,29 +54,33 @@
 </template>
 
 <script>
-export default {
-  name: 'app',
-  methods: {
-    logout() {
-      this.$store.dispatch('LOGOUT');
+  import { mapActions, mapGetters } from 'vuex';
+
+  export default {
+    name: 'app',
+
+    computed: {
+      ...mapGetters('user', {
+        profile: 'profile',
+        loggedIn: 'loggedIn'
+      })
     },
-    login() {
-      this.$router.push('/login');
+
+    methods: {
+      ...mapActions('user', {
+        login: 'login',
+        logout: 'logout'
+      })
     }
-  },
-  mounted() {
-    this.$store.dispatch('AUTH_CHECK');
-  },
-};
+  };
 </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+ font-family: 'Avenir', Helvetica, Arial, sans-serif;
+ -webkit-font-smoothing: antialiased;
+ -moz-osx-font-smoothing: grayscale;
+ color: #2c3e50;
+ margin-top: 60px;
 }
 </style>
