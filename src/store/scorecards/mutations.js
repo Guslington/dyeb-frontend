@@ -1,3 +1,4 @@
 export const RESET_SCORECARD_LIST = "RESET_SCORECARD_LIST";
 export const PUSH_SCORECARD = "PUSH_SCORECARD";
 export const SET_SCORECARD = "SET_SCORECARD";
+export const PUSH_BEER = "PUSH_BEER";

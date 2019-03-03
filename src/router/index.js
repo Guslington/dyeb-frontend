@@ -2,12 +2,17 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Moment from 'vue-moment'
 
-import Home from '@/pages/Home';
-import Competitions from '@/pages/Competitions';
-import Competition from '@/pages/Competition';
-import Register from '@/pages/Register';
-import Scorecard from '@/pages/Scorecard';
-import Profile from '@/pages/Profile';
+import Home from '@/pages/home';
+import Profile from '@/pages/profile';
+
+import List from '@/pages/competition/list';
+import Show from '@/pages/competition/show';
+import New from '@/pages/competition/new';
+import Edit from '@/pages/competition/edit';
+import Beers from '@/pages/competition/beers';
+import Results from '@/pages/competition/results';
+import Register from '@/pages/competition/register';
+import Scorecard from '@/pages/competition/scorecard';
 
 import store from '@/store';
 
@@ -24,26 +29,51 @@ let router = new Router({
     },
     {
       path: '/competitions',
-      name: 'Competitions',
-      component: Competitions,
+      name: 'List',
+      component: List,
       meta: { requiresAuth: true }
     },
     {
       path: '/competition/:id',
-      name: 'Competition',
-      component: Competition,
+      name: 'Show',
+      component: Show,
+      props: true ,
       meta: { requiresAuth: true }
     },
     {
-      path: '/register/:id',
+      path: '/competition/:id/register',
       name: 'Register',
       component: Register,
       meta: { requiresAuth: true }
     },
     {
-      path: '/scorecard/:id',
+      path: '/competition/:id/scorecard',
       name: 'Scorecard',
       component: Scorecard,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/competition/new',
+      name: 'New',
+      component: New,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/competition/:id/edit',
+      name: 'Edit',
+      component: Edit,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/competition/:id/beers',
+      name: 'Beers',
+      component: Beers,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/competition/:id/results',
+      name: 'Results',
+      component: Results,
       meta: { requiresAuth: true }
     },
     {
@@ -51,10 +81,6 @@ let router = new Router({
       name: 'Profile',
       component: Profile,
       meta: { requiresAuth: true }
-    },
-    {
-      path: '*',
-      redirect: '/'
     }
   ]
 })

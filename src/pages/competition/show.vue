@@ -65,20 +65,12 @@
 
       <div class="row">
         <div class="col-auto">
-          <button
-            id="qsRegisterBtn"
-            class="btn btn-primary btn-margin"
-            v-if="competition.status == 'registration'"
-            @click="register(competition.id)">
-              Register
-          </button>
-          <button
-            id="qsScorecardBtn"
-            class="btn btn-primary btn-margin"
-            v-if="competition.status == 'registration'"
-            @click="scorecard(competition.id)">
-              My Scorecard
-          </button>
+          <router-link v-if="competition.status == 'registration'" :to="{name: 'Register', param: { id: competition.id }}">
+            <button id="new" class="btn btn-primary btn-sm">Register</button>
+          </router-link>
+          <router-link v-if="competition.status == 'voting'" :to="{name: 'Scorecard', param: { id: competition.id }}">
+            <button id="new" class="btn btn-primary btn-sm">Scorecard</button>
+          </router-link>
         </div>
       </div>
     </div>
@@ -90,7 +82,7 @@
 import { mapState, mapActions } from 'vuex';
 
 export default {
-  name: 'Competition',
+  name: 'Show',
 
   created () {
     this.getCompetition(this.$route.params.id);
@@ -101,14 +93,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('competitions', {getCompetition: 'get'}),
-
-    register (id) {
-      this.$router.push({ name: 'Register', params: { id: id } })
-    },
-    scorecard (id) {
-      this.$router.push({ name: 'Scorecard', params: { id: id } })
-    }
+    ...mapActions('competitions', {getCompetition: 'get'})
   }
 
 }

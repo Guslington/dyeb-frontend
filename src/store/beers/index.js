@@ -5,14 +5,13 @@ import { uuid } from 'vue-uuid';
 import {
   PUSH_BEER,
   RESET_BEER_LIST,
-  PUSH_BREWER,
-  RESET_BREWER_LIST,
-  SET_BEER
+  SET_BEER,
+  SET_BEERS,
+  UPDATE_ORDER
 } from './mutations';
 
 const state = {
   list: [],
-  brewer: [],
   beer: {
     id: "",
     abv: "",
@@ -26,7 +25,6 @@ const state = {
 
 const getters = {
   list: ({list}) => list,
-  brewer: ({brewer}) => brewer,
   beer: ({beer}) => beer
 };
 
@@ -40,16 +38,18 @@ const mutations = {
     state.list = [];
   },
 
-  [PUSH_BREWER](state, beer) {
-    state.brewer.push(beer);
-  },
-
-  [RESET_BREWER_LIST](state, brewer) {
-    state.brewer = [];
-  },
-
   [SET_BEER](state, beer) {
     state.beer = Object.assign({}, state.beer, beer);
+  },
+
+  [SET_BEERS](state, list) {
+    state.list = list;
+  },
+
+  [UPDATE_ORDER](state, list) {
+    for (var i=0; i<list.length; i++) {
+      state.list[i].order = i;
+    }
   }
 
 }
@@ -58,7 +58,7 @@ const actions = {
   list({commit}, competition) {
     commit(RESET_BEER_LIST);
 
-    db.collection('beers').where("compId", "==", competition).orderBy("style","asc").onSnapshot(snapshot => {
+    db.collection('beers').where("compId", "==", competition).orderBy("order","asc").onSnapshot(snapshot => {
       snapshot.docChanges().forEach(function(change) {
         if (change.type === "added") {
           commit(PUSH_BEER, {
@@ -71,12 +71,12 @@ const actions = {
   },
 
   brewer({commit}, brewer) {
-    commit(RESET_BREWER_LIST);
+    commit(RESET_BEER_LIST);
 
     db.collection('beers').where("brewerId", "==", brewer).orderBy("timestamp","asc").onSnapshot(snapshot => {
       snapshot.docChanges().forEach(function(change) {
         if (change.type === "added") {
-          commit(PUSH_BREWER, {
+          commit(PUSH_BEER, {
             id: change.doc.id,
             ...change.doc.data()
           });
@@ -88,25 +88,25 @@ const actions = {
   async get({commit}, payload) {
     const beer = await db.collection('beers').where("compId", "==", payload.compId).where("brewerId", "==", payload.brewerId).limit(1).get();
 
-    if (typeof beer.docs !== 'undefined' && beer.docs.length > 0) {
-      console.log('Beer already registered, setting to state')
+    if (!beer.empty)  {
       commit(SET_BEER, {
         id: beer.docs[0].id,
         ...beer.docs[0].data()
       });
     } else {
-      console.log('No beer registered yet...')
       commit(SET_BEER, {
         id: uuid.v4(),
         brewerId: payload.brewerId,
         brewer: payload.brewer,
-        compId: payload.compId
+        compId: payload.compId,
+        order: 9999,
+        accepted: true
       });
     }
   },
 
-  async create({state}) {
-    console.log(state.beer.id)
+  async set({state}) {
+    console.log(state.beer)
     await db.collection('beers').doc(state.beer.id)
             .set({
               abv: state.beer.abv,
@@ -115,8 +115,21 @@ const actions = {
               compId: state.beer.compId,
               name: state.beer.name,
               style: state.beer.style,
-              timestamp: firebase.firestore.FieldValue.serverTimestamp()
+              timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+              order: state.beer.order,
+              accepted: state.beer.accepted
             },{merge: true});
+  },
+
+  async batchUpdate({state}) {
+    var batch = db.batch();
+    for (var i=0; i<state.list.length; i++) {
+      var beerDoc = db.collection("beers").doc(state.list[i].id);
+      batch.update(beerDoc, {order: state.list[i].order, accepted: state.list[i].accepted});
+    }
+    batch.commit().then(function () {
+      alert('updated beers')
+    });
   }
 }
 

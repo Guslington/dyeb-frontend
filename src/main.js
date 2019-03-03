@@ -5,6 +5,7 @@ import UUID from 'vue-uuid';
 import App from './App';
 import router from './router';
 import store from './store';
+
 import './auth';
 
 import 'firebaseui/dist/firebaseui.css';

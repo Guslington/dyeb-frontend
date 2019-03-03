@@ -10,7 +10,7 @@
       <div class="card flex-row flex-wrap">
 
           <div class="card-header border-0">
-              <img src="../assets/beer.png" alt="">
+              <img src="../../assets/beer.png" alt="">
           </div>
           <div class="card-block px-2">
               <h4 class="card-title">{{ competition.name }}</h4>
@@ -36,7 +36,7 @@
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
-  name: 'Competitions',
+  name: 'List',
 
   created () {
     this.findCompetitions();
@@ -54,7 +54,7 @@ export default {
     }),
 
     details (id) {
-      this.$router.push({ name: 'Competition', params: { id: id } })
+      this.$router.push({ name: 'Show', params: { id: id } })
     },
     register (id) {
       this.$router.push({ name: 'Register', params: { id: id } })

@@ -1,34 +1,39 @@
 <template>
   <div class="register">
+
     <h1>Register your beer for {{ competition.name }}</h1>
 
     <form @submit.prevent="registerBeer">
 
-      <div class="form-group row">
+      <div class="form-group form-row">
         <label for="name" class="col-sm-2 col-form-label">Name</label>
         <div class="col-sm-3">
-          <input id="name" class="form-control" v-model="beer.name" type="text">
+          <input id="name" class="form-control" v-model="beer.name" type="text" required />
         </div>
       </div>
 
-      <div class="form-group row">
+      <div class="form-group form-row">
         <label for="style" class="col-sm-2 col-form-label">Style</label>
         <div class="col-sm-3">
-          <input id="style" class="form-control" v-model="beer.style" type="text">
+          <input id="style" class="form-control" v-model="beer.style" type="text" required />
         </div>
       </div>
 
-      <div class="form-group row">
+      <div class="form-group form-row">
         <label for="abv" class="col-sm-2 col-form-label">ABV</label>
         <div class="col-sm-3">
-          <input id="abv" class="form-control" v-model="beer.abv" type="text">
+          <input id="abv" class="form-control" v-model="beer.abv" type="text" required />
         </div>
       </div>
 
-      <div class="form-group row">
-        <div class="col-sm-3">
-          <button type="submit" class="btn btn-primary">Submit</button>
+      <div class="form-group form-row">
+        <div class="col-sm-1">
+          <button type="submit" class="btn btn-primary">Save</button>
         </div>
+        <div class="col-sm-1">
+
+        </div>
+
       </div>
 
     </form>
@@ -68,7 +73,7 @@ export default {
   methods: {
     ...mapActions('competitions', {getCompetition: 'get'}),
     ...mapActions('beers', {getBeer: 'get'}),
-    ...mapActions('beers', {create: 'create'}),
+    ...mapActions('beers', {create: 'set'}),
 
     async registerBeer() {
       try {

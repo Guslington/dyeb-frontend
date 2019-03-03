@@ -3,40 +3,58 @@
 
     <div class="row">
 
-      <div id="beers" class="col-sm">
-        <nav class="navbar navbar-dark bg-dark competition-header">
+      <div id="beers" class="col-md-6">
+        <nav class="navbar navbar-dark bg-dark">
           <span class="navbar-brand">My Beers</span>
         </nav>
-        <table width="100%">
-          <tr v-for="beer in beerList">
-            <td>{{ beer.name }}</td>
-            <td>{{ beer.style }}</td>
-            <td>{{ beer.abv }}%</td>
-          </tr>
-        </table>
+        <template v-for="beer in beerList">
+          <div class="card">
+            <h5 class="card-header">{{ beer.name }}</h5>
+            <div class="card-body">
+              <dl class="row">
+                <dd class="col-sm-8"><strong>Style:</strong> {{ beer.style }}</dd>
+                <dd class="col-sm-4"><strong>ABV:</strong> {{ beer.abv }}%</dd>
+              </dl>
+              <dl class="row">
+                <dd class="col-sm-8"><strong>Competition:</strong> TBA</dt>
+                <dd class="col-sm-4"><strong>Place:</strong> TBA</dd>
+              </dl>
+            </div>
+          </div>
+        </template>
       </div>
 
-      <div id="competitions" class="col-sm">
-        <nav class="navbar navbar-dark bg-dark competition-header">
+      <div id="competitions" class="col-md-6">
+        <nav class="navbar navbar-dark bg-dark">
           <span class="navbar-brand">My Competitions</span>
-          <button
-            id="qsNewBtn"
-            class="btn btn-primary btn-margin"
-            @click="newCompetition()">
-              New
-          </button>
+          <router-link :to="{name: 'New'}">
+            <button id="new" class="btn btn-primary btn-sm">New</button>
+          </router-link>
         </nav>
-        <table width="100%">
-          <tr v-for="competition in compList">
-            <td>{{ competition.name }}</td>
-            <td>{{ competition.tagline }}</td>
-            <td>{{ competition.date.seconds | moment("MMMM Do YYYY")}}</td>
-          </tr>
-        </table>
+
+        <template v-for="competition in compList">
+          <div class="card">
+            <h5 class="card-header">{{ competition.name }}</h5>
+            <div class="card-body">
+              <dl class="row">
+                <dd class="col-sm-7"><h5 class="card-title">{{ competition.tagline }}</h5></dd>
+                <dd class="col-sm-5">{{ competition.date.seconds | moment("MMMM Do YYYY, h:mm A")}}</dd>
+              </dl>
+              <router-link :to="{name: 'Beers', params: { id: competition.id }}">
+                <button id="new" class="btn btn-outline-info btn-sm">Beers</button>
+              </router-link>
+              <router-link :to="{name: 'Results', params: { id: competition.id }}">
+                <button id="new" class="btn btn-outline-info btn-sm">Results</button>
+              </router-link>
+              <router-link :to="{name: 'Edit', params: { id: competition.id }}">
+                <button id="new" class="btn btn-outline-danger btn-sm">Edit</button>
+              </router-link>
+            </div>
+          </div>
+        </template>
+
       </div>
-
     </div>
-
   </div>
 </template>
 
@@ -53,8 +71,8 @@ export default {
 
   computed: {
     ...mapState('user', ['profile']),
-    ...mapState('beers', {beerList: 'brewer'}),
-    ...mapState('competitions', {compList: 'brewer'}),
+    ...mapState('beers', {beerList: 'list'}),
+    ...mapState('competitions', {compList: 'list'}),
   },
 
   methods: {
@@ -64,17 +82,25 @@ export default {
 
     ...mapActions('competitions', {
       findCompetitions: 'brewer'
-    }),
-
-    newCompetition() {
-      alert("new competition")
-    },
-
-    editCompetition(id) {
-      alert("Edit competition " + id)
-    }
+    })
 
   }
 
 }
 </script>
+
+<style>
+.list-row {
+  padding: 5px 0 5px 5px;
+  border-bottom: 1px solid;
+}
+
+dl, ol, ul {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.card-body {
+    padding: 1rem;
+}
+</style>
